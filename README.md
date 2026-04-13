@@ -1,12 +1,12 @@
-# pretty-prompts
+# prompt-builder
 
-A Claude Code plugin that wraps the **prompt-optimizer** skill — a Prompt Policy Engine that classifies, diagnoses, rewrites, and scores prompts calibrated to model tier and deployment context.
+A Claude Code plugin that wraps the **prompt-builder** skill — a Prompt Policy Engine that classifies, diagnoses, rewrites, and scores prompts calibrated to model tier and deployment context.
 
 Designed to be callable by **agents, tools, and humans** through a shared input/output contract.
 
 ## What it does
 
-Given a raw prompt, `pretty-prompts` returns:
+Given a raw prompt, `prompt-builder` returns:
 
 - A 6-Part-Stack optimized prompt (Role / Task / Constraints / Context / Output Format / Acceptance Criteria)
 - A 5-dimension quality score (Accuracy / Clarity / Constraint Strength / Output Determinism / Completeness)
@@ -26,14 +26,14 @@ Standalone repo with symlink install (matches `bookmark`/`build-loop` pattern):
 
 ```bash
 cd ~/.claude/plugins
-ln -s ~/Desktop/git-folder/pretty-prompts pretty-prompts
+ln -s ~/Desktop/git-folder/prompt-builder prompt-builder
 ```
 
 Verify:
 
 ```bash
 claude --print "List my installed plugins"
-# should include pretty-prompts
+# should include prompt-builder
 ```
 
 ## Usage
@@ -42,20 +42,20 @@ claude --print "List my installed plugins"
 
 | Command | Purpose |
 |---------|---------|
-| `/pretty-prompts:optimize [prompt or path]` | Optimize a prompt end-to-end |
-| `/pretty-prompts:score [prompt or path]` | Score-only; returns dimensional breakdown + diagnosis |
-| `/pretty-prompts:compare <a> <b>` | A/B two prompt versions with regression detection |
-| `/pretty-prompts:save <id>` | Persist the last optimized prompt to the library |
-| `/pretty-prompts:list [filter]` | Show saved prompts and their latest scores |
+| `/prompt-builder:optimize [prompt or path]` | Optimize a prompt end-to-end |
+| `/prompt-builder:score [prompt or path]` | Score-only; returns dimensional breakdown + diagnosis |
+| `/prompt-builder:compare <a> <b>` | A/B two prompt versions with regression detection |
+| `/prompt-builder:save <id>` | Persist the last optimized prompt to the library |
+| `/prompt-builder:list [filter]` | Show saved prompts and their latest scores |
 
 ### Skill invocation (agents and tools)
 
-Any caller can invoke the skill directly with labeled inputs. The skill returns a structured response per `skills/prompt-optimizer/references/caller-contract.md`.
+Any caller can invoke the skill directly with labeled inputs. The skill returns a structured response per `skills/prompt-builder/references/caller-contract.md`.
 
 Example invoking prompt (sent by an agent):
 
 ```
-Use the `prompt-optimizer` skill.
+Use the `prompt-builder` skill.
 
 raw_prompt: You are a helpful assistant. Analyze the CSV and tell me what's interesting.
 model_tier: T2
@@ -80,14 +80,14 @@ OPTIMIZED_PROMPT:
 TEMPERATURE_HINT: 0.2
 ```
 
-Full contract: [`skills/prompt-optimizer/references/caller-contract.md`](skills/prompt-optimizer/references/caller-contract.md)
+Full contract: [`skills/prompt-builder/references/caller-contract.md`](skills/prompt-builder/references/caller-contract.md)
 
 ## Library (project-local storage)
 
-Saved prompts live under `.pretty-prompts/prompts/<id>/` in the consuming project:
+Saved prompts live under `.prompt-builder/prompts/<id>/` in the consuming project:
 
 ```
-.pretty-prompts/
+.prompt-builder/
 ├── prompts/
 │   ├── summarizer/
 │   │   ├── v1.md           # The optimized prompt (copy-ready)
@@ -100,14 +100,14 @@ Saved prompts live under `.pretty-prompts/prompts/<id>/` in the consuming projec
     └── lessons.md          # Append-only cross-prompt insights (optional)
 ```
 
-Versions are never overwritten — `/pretty-prompts:save` always increments.
+Versions are never overwritten — `/prompt-builder:save` always increments.
 
 ## Regression testing
 
 The plugin ships with a zero-dependency eval runner:
 
 ```bash
-cd ~/Desktop/git-folder/pretty-prompts
+cd ~/Desktop/git-folder/prompt-builder
 node evals/run-evals.mjs              # run all cases
 node evals/run-evals.mjs reranker-t3  # run one case
 node evals/run-evals.mjs --dry        # preview invoking prompts without calling claude
@@ -130,7 +130,7 @@ The runner spawns `claude -p` per case, parses the CONFIG line, and asserts on `
 
 ## Architecture
 
-- **1 skill** (`prompt-optimizer`) — the engine. Progressive disclosure via 4 reference files + 5 worked examples.
+- **1 skill** (`prompt-builder`) — the engine. Progressive disclosure via 4 reference files + 5 worked examples.
 - **5 slash commands** — thin wrappers. Humans use these; agents invoke the skill directly.
 - **No agents, no hooks, no MCP server** — the skill is a stateless transform. Callers get better results invoking it directly than orchestrating sub-agents.
 - **Zero runtime dependencies** — plain Markdown + JSON + Node's built-in stdlib.

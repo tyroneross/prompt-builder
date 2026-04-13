@@ -3,7 +3,7 @@ description: "Score an existing prompt on the 5-dimension rubric without rewriti
 argument-hint: "[prompt text or path to file]"
 ---
 
-Invoke the `prompt-optimizer` skill in score-only mode.
+Invoke the `prompt-builder` skill in score-only mode.
 
 **User arguments**: {{ARGUMENTS}}
 
@@ -13,7 +13,7 @@ Invoke the `prompt-optimizer` skill in score-only mode.
 
 2. If arguments look like a file path, read it as the prompt to score.
 
-3. Load the `prompt-optimizer` skill. Skip Steps 1–4 (classify → enhance). Go directly to:
+3. Load the `prompt-builder` skill. Skip Steps 1–4 (classify → enhance). Go directly to:
    - Classify the prompt's function, context dependency, output constraint
    - Run Step 5 VALIDATE
    - Run Step 6 SCORE per `references/scoring.md`
@@ -24,4 +24,4 @@ Invoke the `prompt-optimizer` skill in score-only mode.
    - `RISK_NOTES:` — what would need to change to raise any dimension ≤ 3
    - Do NOT produce an `OPTIMIZED_PROMPT:` block. The user only asked for a score.
 
-5. If any dimension is ≤ 2, flag it as a **blocker** and recommend running `/pretty-prompts:optimize` to fix.
+5. If any dimension is ≤ 2, flag it as a **blocker** and recommend running `/prompt-builder:optimize` to fix.

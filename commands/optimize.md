@@ -3,7 +3,7 @@ description: "Optimize a raw prompt for a target model tier and deployment conte
 argument-hint: "[raw prompt or path to file]"
 ---
 
-Invoke the `prompt-optimizer` skill to optimize a prompt.
+Invoke the `prompt-builder` skill to optimize a prompt.
 
 **User arguments**: {{ARGUMENTS}}
 
@@ -17,11 +17,11 @@ Invoke the `prompt-optimizer` skill to optimize a prompt.
 
 2. If arguments look like a file path (starts with `/`, `~`, `./`, or ends in `.md`/`.txt`/`.prompt`), read the file as `raw_prompt`.
 
-3. Load the `prompt-optimizer` skill and run its full process with the collected inputs per `references/caller-contract.md`.
+3. Load the `prompt-builder` skill and run its full process with the collected inputs per `references/caller-contract.md`.
 
 4. Present the full skill output (CONFIG, DIAGNOSIS if applicable, OPTIMIZED_PROMPT, ASSUMPTIONS, RISK_NOTES, TEMPERATURE_HINT, and KEY_CHANGES/REGRESSION_NOTES if iterating).
 
 5. Offer next actions:
-   - `/pretty-prompts:save <id>` — persist this version to `.pretty-prompts/prompts/<id>/`
-   - `/pretty-prompts:compare <id>` — A/B against a saved version
+   - `/prompt-builder:save <id>` — persist this version to `.prompt-builder/prompts/<id>/`
+   - `/prompt-builder:compare <id>` — A/B against a saved version
    - Edit and re-run if the user wants adjustments

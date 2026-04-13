@@ -1,6 +1,6 @@
 {
-  "skill_name": "prompt-optimizer",
-  "plugin_name": "pretty-prompts",
+  "skill_name": "prompt-builder",
+  "plugin_name": "prompt-builder",
   "evals": [
     {
       "id": "reranker-t3",

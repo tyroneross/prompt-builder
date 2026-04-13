@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Zero-dependency eval runner for the pretty-prompts plugin.
+ * Zero-dependency eval runner for the prompt-builder plugin.
  *
  * For each eval case in evals.json:
- *   1. Build an invoking prompt that loads the `prompt-optimizer` skill and
+ *   1. Build an invoking prompt that loads the `prompt-builder` skill and
  *      supplies the case's inputs per the caller contract.
  *   2. Invoke `claude -p` (Claude Code headless) with that prompt.
  *   3. Parse the response. Assert on required sections, must_contain strings,
@@ -44,7 +44,7 @@ if (cases.length === 0) {
 function buildInvokingPrompt(caseObj) {
   const inputs = caseObj.inputs;
   const lines = [
-    "Use the `prompt-optimizer` skill from the `pretty-prompts` plugin.",
+    "Use the `prompt-builder` skill from the `prompt-builder` plugin.",
     "Follow `references/caller-contract.md` — return the strict machine output (CONFIG / DIAGNOSIS / OPTIMIZED_PROMPT / ASSUMPTIONS / RISK_NOTES / TEMPERATURE_HINT / KEY_CHANGES / REGRESSION_NOTES).",
     "",
     "Inputs:",

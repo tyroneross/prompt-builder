@@ -1,7 +1,7 @@
 # Caller Contract
 
 This file defines the input/output contract for agents, tools, and slash commands that
-invoke the `prompt-optimizer` skill programmatically. Read this when the caller is not
+invoke the `prompt-builder` skill programmatically. Read this when the caller is not
 a human (or when a human explicitly asks for a machine-parseable response).
 
 Humans invoking the skill in chat do not need this contract — they get the same
@@ -94,7 +94,7 @@ REGRESSION_NOTES:
 
 **Caller's invoking prompt**:
 ```
-Use the prompt-optimizer skill.
+Use the prompt-builder skill.
 
 raw_prompt: You are a helpful assistant. Analyze the uploaded CSV and tell me what's interesting.
 model_tier: T2
@@ -128,7 +128,7 @@ TEMPERATURE_HINT: 0.2
 
 **Caller's invoking prompt**:
 ```
-Use the prompt-optimizer skill.
+Use the prompt-builder skill.
 
 raw_prompt: <new draft>
 prior_version: <old draft>
@@ -147,7 +147,7 @@ deployment: interactive
 
 ### Example 3: Slash command
 
-The `/prompt-optimizer:optimize` command parses user arguments into the contract
+The `/prompt-builder:optimize` command parses user arguments into the contract
 and invokes the skill. The command file is a thin wrapper; the skill does all the work.
 
 ---
@@ -177,9 +177,9 @@ The eval runner (`evals/run-evals.mjs`) invokes the skill via `claude -p` for ea
 parses CONFIG to extract the score, and asserts thresholds. Failures block a release.
 
 ### Pattern C: Slash command for human authoring
-A human invokes `/prompt-optimizer:optimize`. The command collects inputs interactively,
+A human invokes `/prompt-builder:optimize`. The command collects inputs interactively,
 runs the skill, and shows the full output. If the user is satisfied, they run
-`/prompt-optimizer:save <id>` to persist the result to `.prompt-optimizer/prompts/<id>/`.
+`/prompt-builder:save <id>` to persist the result to `.prompt-builder/prompts/<id>/`.
 
 ### Pattern D: Product layer wrapping the skill
 A product (e.g., Atomize, FloDoro) wraps the skill behind a service endpoint. The endpoint
@@ -195,7 +195,7 @@ The skill version is reflected in CONFIG's `v{n}`. When iterating (Step 7) the c
 
 1. Keep the `prompt_id` stable across versions (the optimized prompt's identity).
 2. Increment the `v{n}` on each meaningful change.
-3. Persist the CONFIG + OPTIMIZED_PROMPT + meta to the library (e.g., `.prompt-optimizer/prompts/<id>/v2.md`).
+3. Persist the CONFIG + OPTIMIZED_PROMPT + meta to the library (e.g., `.prompt-builder/prompts/<id>/v2.md`).
 4. Replay the meta on the next iteration via `prior_version` + `prior_score`.
 
 This gives callers a deterministic iteration loop without the skill needing to maintain state.

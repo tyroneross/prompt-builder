@@ -1,0 +1,184 @@
+{
+  "skill_name": "prompt-optimizer",
+  "plugin_name": "pretty-prompts",
+  "evals": [
+    {
+      "id": "reranker-t3",
+      "description": "RAG reranker for Haiku",
+      "inputs": {
+        "raw_prompt": "Score these passages for relevance to the query.",
+        "model_tier": "T3",
+        "deployment": "rag_pipeline"
+      },
+      "must_contain": [
+        "query_intent",
+        "position",
+        "rationale",
+        "no_relevant_results"
+      ],
+      "must_contain_case_insensitive": [
+        "reranking stage",
+        "score"
+      ],
+      "min_score": 20,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:", "TEMPERATURE_HINT:"],
+      "expected_type_substring": "Reranker"
+    },
+    {
+      "id": "backend-improver-t2",
+      "description": "Backend prompt improvement layer for GPT-4o-mini",
+      "inputs": {
+        "raw_prompt": "You are a helpful assistant. Analyze the data and give me insights.",
+        "model_tier": "T2",
+        "deployment": "backend",
+        "output_consumer": "llm"
+      },
+      "must_contain_case_insensitive": [
+        "[ASSUMED",
+        "supply chain"
+      ],
+      "must_not_contain_case_insensitive": [
+        "Meta-commentary"
+      ],
+      "min_score": 19,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:"],
+      "expected_type_substring": "Instructional"
+    },
+    {
+      "id": "personal-mobile-t3",
+      "description": "Personal mobile assistant for family activities",
+      "inputs": {
+        "raw_prompt": "Find family-friendly weekend activities near Campbell CA",
+        "model_tier": "T3",
+        "deployment": "personal_mobile"
+      },
+      "must_contain_case_insensitive": [
+        "Campbell",
+        "privacy",
+        "kids",
+        "safety"
+      ],
+      "must_not_contain_case_insensitive": [
+        "JSON schema"
+      ],
+      "min_score": 19,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:", "TEMPERATURE_HINT:"]
+    },
+    {
+      "id": "agent-tooling-t2",
+      "description": "Research agent with tool registry and state",
+      "inputs": {
+        "raw_prompt": "Build an agent that researches a company and returns a summary.",
+        "model_tier": "T2",
+        "deployment": "agent"
+      },
+      "must_contain_case_insensitive": [
+        "state",
+        "tool",
+        "termination",
+        "retry"
+      ],
+      "min_score": 20,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:"]
+    },
+    {
+      "id": "eval-judge-t2",
+      "description": "Scoring rubric for AI summaries",
+      "inputs": {
+        "raw_prompt": "Score AI-generated summaries.",
+        "model_tier": "T2",
+        "deployment": "eval_judge"
+      },
+      "must_contain_case_insensitive": [
+        "rubric",
+        "criterion",
+        "calibration",
+        "independent"
+      ],
+      "min_score": 20,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:"]
+    },
+    {
+      "id": "iteration-with-prior",
+      "description": "Iterate from a prior version; verify score comparison and KEY_CHANGES",
+      "inputs": {
+        "raw_prompt": "You are a document analyst. Extract the 3 most important claims from the provided document. For each claim, cite the paragraph number. If a claim is inferred rather than stated, tag it [INFERRED]. Output as a numbered list.",
+        "prior_version": "Summarize this document in 3 bullet points.",
+        "prior_score": "12/25 [A:2|C:3|Cs:2|D:3|Cp:2]",
+        "model_tier": "T2",
+        "deployment": "interactive"
+      },
+      "must_contain_case_insensitive": [
+        "KEY_CHANGES",
+        "INFERRED"
+      ],
+      "min_score": 20,
+      "required_sections": ["CONFIG:", "DIAGNOSIS:", "OPTIMIZED_PROMPT:", "KEY_CHANGES:"]
+    },
+    {
+      "id": "regression-detection",
+      "description": "New version removed a constraint; expect REGRESSION_NOTES",
+      "inputs": {
+        "raw_prompt": "You are a document analyst. Summarize the document.",
+        "prior_version": "You are a document analyst. Extract the 3 most important claims. Cite the paragraph for each. Tag [INFERRED] when uncertain.",
+        "prior_score": "21/25 [A:5|C:4|Cs:4|D:4|Cp:4]",
+        "model_tier": "T2",
+        "deployment": "interactive"
+      },
+      "must_contain_case_insensitive": [
+        "REGRESSION",
+        "dropped"
+      ],
+      "required_sections": ["CONFIG:", "REGRESSION_NOTES:"]
+    },
+    {
+      "id": "plugin-data-t3",
+      "description": "Plugin deployment: CSV transformation for Haiku",
+      "inputs": {
+        "raw_prompt": "Clean this CSV of customer records.",
+        "model_tier": "T3",
+        "deployment": "plugin"
+      },
+      "must_contain_case_insensitive": [
+        "schema",
+        "null",
+        "coerce"
+      ],
+      "min_score": 19,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:"]
+    },
+    {
+      "id": "tier-mismatch-detection",
+      "description": "Over-complex prompt for T3; skill should simplify",
+      "inputs": {
+        "raw_prompt": "Perform a comprehensive multi-stage analysis involving chain-of-thought reasoning, meta-reflection on your own inference, and recursive self-critique before producing the final output.",
+        "model_tier": "T3",
+        "deployment": "interactive"
+      },
+      "must_contain_case_insensitive": [
+        "tier"
+      ],
+      "must_not_contain_case_insensitive": [
+        "chain-of-thought"
+      ],
+      "min_score": 17,
+      "required_sections": ["CONFIG:", "DIAGNOSIS:", "RISK_NOTES:"]
+    },
+    {
+      "id": "hybrid-mode",
+      "description": "Personal-facing app feature with production backend controls",
+      "inputs": {
+        "raw_prompt": "Help me plan my family's week. Load my calendar and suggest balance between work and kid activities.",
+        "model_tier": "T2",
+        "deployment": "plugin",
+        "mode": "hybrid"
+      },
+      "must_contain_case_insensitive": [
+        "privacy",
+        "schema"
+      ],
+      "min_score": 19,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:"]
+    }
+  ]
+}

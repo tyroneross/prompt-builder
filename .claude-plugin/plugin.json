@@ -1,7 +1,7 @@
 {
   "name": "prompt-builder",
-  "version": "0.1.0",
-  "description": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+  "version": "0.1.1",
+  "description": "Prompt Policy Engine \u2014 classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
   "author": {
     "name": "Tyrone Ross"
   },

@@ -26,7 +26,7 @@ Standalone repo with symlink install (matches `bookmark`/`build-loop` pattern):
 
 ```bash
 cd ~/.claude/plugins
-ln -s ~/Desktop/git-folder/prompt-builder prompt-builder
+ln -s ~/dev/git-folder/prompt-builder prompt-builder
 ```
 
 Verify:
@@ -107,7 +107,7 @@ Versions are never overwritten — `/prompt-builder:save` always increments.
 The plugin ships with a zero-dependency eval runner:
 
 ```bash
-cd ~/Desktop/git-folder/prompt-builder
+cd ~/dev/git-folder/prompt-builder
 node evals/run-evals.mjs              # run all cases
 node evals/run-evals.mjs reranker-t3  # run one case
 node evals/run-evals.mjs --dry        # preview invoking prompts without calling claude
@@ -138,3 +138,17 @@ The runner spawns `claude -p` per case, parses the CONFIG line, and asserts on `
 ## License
 
 MIT
+
+## Codex
+
+This package now ships an additive Codex plugin surface alongside the existing Claude Code package. The Claude package remains authoritative for Claude behavior; the Codex package adds a parallel `.codex-plugin/plugin.json` install surface without changing the Claude runtime.
+
+Package root for Codex installs:
+- the repository root (`.`)
+
+Primary Codex surface:
+- skills from `./skills` when present
+- MCP config from `(none)` when present
+
+Install the package from this package root using your current Codex plugin install flow. The Codex package is additive only: Claude-specific hooks, slash commands, and agent wiring remain unchanged for Claude Code.
+

@@ -1,6 +1,6 @@
 ---
 name: prompt-builder
-description: "Production-grade prompt optimization engine. Use this skill whenever the user (or a calling agent/tool) wants to: create, improve, rewrite, score, or debug a prompt for any LLM; build prompts for RAG pipelines, AI agents, plugins, backend prompt-improvement layers, eval judges, or personal mobile/voice agents; optimize for a specific model tier (frontier, mid-tier, small/fast); compare prompt versions with regression protection; or produce reusable prompt templates. Also trigger on: 'prompt engineering', 'system prompt', 'optimize this prompt', 'make this prompt better', 'prompt for Haiku/Sonnet/Opus/GPT', 'reranker prompt', 'agent prompt', 'prompt template', 'A/B this prompt'. This skill is callable by other agents and tools via the caller contract (see references/caller-contract.md)."
+description: Use to create, rewrite, score, or A/B compare prompts calibrated to model tier (frontier/mid/small) and deployment (RAG, agent, eval judge). Triggers on "optimize this prompt", "system prompt". Callable by other agents.
 ---
 
 # Prompt Optimization Engine v3.1

@@ -1,10 +1,10 @@
 ---
-name: prompt-builder
+name: route
 description: Main prompt-builder entry. Dispatches to a subcommand based on your request, or lists options if unclear. Use `prompt-builder:<subcommand>` to target a specific action directly.
 argument-hint: "[what you want to do]"
 ---
 
-# /prompt-builder — Router
+# /prompt-builder:route — Router
 
 Route this request to the appropriate prompt-builder subcommand or skill based on the user's intent.
 

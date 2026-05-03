@@ -40,16 +40,13 @@ SKILLS_DIR = REPO_ROOT / "skills"
 # (user explicitly accepted these on 2026-05-01 — UX cost of rename
 # deemed not worth the unverified risk). Remove an entry here ONLY when
 # the corresponding command/skill pair has actually been renamed.
-ACCEPTED_SIBLINGS: set[str] = {
-    # 2026-05-01 initial scan — same shape as the build-loop:build-loop
-    # collision documented in build-loop's KNOWN-ISSUES.md. The Skill
-    # runtime resolver may return commands/prompt-builder.md verbatim
-    # instead of executing skills/prompt-builder/SKILL.md. Recommended
-    # fix is Option 2 (rename the slash-command file, e.g. to
-    # commands/optimize.md or commands/build.md), but accepted for now
-    # awaiting user decision on the rename.
-    "prompt-builder:prompt-builder",
-}
+# Empty as of 2026-05-03. The prior `prompt-builder:prompt-builder`
+# collision was fixed by renaming `commands/prompt-builder.md` →
+# `commands/route.md` (Option 2 from build-loop's KNOWN-ISSUES.md):
+# skill name unchanged at `skills/prompt-builder/SKILL.md`, so all
+# `Skill("prompt-builder:prompt-builder")` callers continue to resolve
+# correctly. User surface is now `/prompt-builder:route`.
+ACCEPTED_SIBLINGS: set[str] = set()
 
 FINDING_KEYS = (
     "plugin_path",

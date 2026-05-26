@@ -1,0 +1,30 @@
+{
+  "name": "prompt-builder",
+  "version": "0.1.2",
+  "description": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+  "author": {
+    "name": "Tyrone Ross"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "prompt",
+    "prompt-engineering",
+    "optimization",
+    "rag",
+    "agents",
+    "evals",
+    "llm"
+  ],
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Prompt Builder",
+    "shortDescription": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+    "longDescription": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+    "developerName": "Ross Labs",
+    "category": "Coding",
+    "capabilities": [
+      "Read",
+      "Write"
+    ]
+  }
+}

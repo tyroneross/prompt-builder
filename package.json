@@ -1,0 +1,44 @@
+{
+  "name": "@tyroneross/prompt-builder",
+  "version": "0.1.2",
+  "description": "Classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Ships as a Claude Code + Codex plugin (commands, skills, evals, scripts).",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Tyrone Ross"
+  },
+  "homepage": "https://github.com/tyroneross/prompt-builder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyroneross/prompt-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tyroneross/prompt-builder/issues"
+  },
+  "keywords": [
+    "prompt",
+    "prompt-engineering",
+    "optimization",
+    "rag",
+    "agents",
+    "evals",
+    "llm",
+    "claude-code",
+    "codex",
+    "plugin"
+  ],
+  "files": [
+    ".claude-plugin/",
+    ".codex-plugin/",
+    "commands/",
+    "skills/",
+    "scripts/",
+    "evals/",
+    "CLAUDE.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
+  }
+}

@@ -145,6 +145,9 @@ unless length is a stated criterion."
   ]
 }
 ```
+Enforce this schema via constrained decoding (json_schema / Pydantic / GBNF) where the
+runtime supports it — prompt-only JSON adherence is ~82-92% vs >99% constrained (Step 2.5).
+The inline schema above is the fallback for runtimes without constrained decoding.
 
 **T3 requirement**: Include 3 fully scored examples with different score distributions
 (all low, mixed, all high) so the model sees the full range.

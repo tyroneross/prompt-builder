@@ -31,6 +31,7 @@ Missing fields fall back to defaults.
 |-------|------|---------|---------|
 | `raw_prompt` | string | **required** | The prompt to optimize. Can be a file path; if so, read the file. |
 | `model_tier` | `T1` \| `T2` \| `T3` | `T2` | Capability of the model that will execute the optimized prompt. |
+| `reasoning_mode` | `reasoning` \| `standard` | `standard` | Is the target a reasoning-native model (o3/o4, GPT-5, Claude extended-thinking, DeepSeek-R1)? When `reasoning`, Step 4 suppresses CoT + few-shot and recommends controlling depth via the reasoning-effort / thinking-budget parameter. |
 | `deployment` | `interactive` \| `backend` \| `rag_pipeline` \| `agent` \| `plugin` \| `eval_judge` \| `personal_mobile` | `interactive` | Where the optimized prompt runs. |
 | `output_consumer` | `human` \| `llm` \| `api` \| `pipeline_stage` | inferred from deployment | Who/what reads the output of the optimized prompt. |
 | `risk_level` | `low` \| `medium` \| `high` | `medium` | How costly a bad output is. Raises scoring thresholds and enhancements when `high`. |
@@ -40,7 +41,7 @@ Missing fields fall back to defaults.
 | `source_material` | string | none | Grounding material for RAG/data tasks. Can be a file path. |
 | `mode` | `personal` \| `production` \| `hybrid` | inferred from deployment | Operating mode override. |
 | `skip_scoring` | boolean | `false` | If true, return optimized prompt only (no score block). Used for rapid drafts. |
-| `target_api_supports_structured_outputs` | boolean | `false` | If true, the output format can rely on API-level schema enforcement and omit inline "return only JSON" instructions. |
+| `target_api_supports_structured_outputs` | boolean | `false` | If true, the runtime supports constrained decoding (OpenAI `json_schema` strict, Anthropic tool-use, Pydantic/Zod, or GBNF). The prompt then describes fields but omits inline "return only JSON" (prompt-schema is the fallback only when this is false). See Step 2.5. |
 
 ---
 

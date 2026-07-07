@@ -13,6 +13,13 @@ Use when the summary in SKILL.md needs more specificity.
 | T2 | Sonnet, GPT-4o-mini, Gemini Flash | Follows structured guidance reliably. Needs explicit constraints. Selective CoT helps. May drop rules under long context. |
 | T3 | Haiku, GPT-3.5, local <13B | Needs rigid sequential pipeline. Cannot reliably self-route. Fails on multi-axis conditional logic. Requires explicit examples for every non-trivial pattern. |
 
+**Orthogonal axis — `REASONING_MODE`** (Step 0). Reasoning-native models (o3/o4, GPT-5,
+Claude extended-thinking, DeepSeek-R1) sit at the T1 capability tier but change *technique
+selection*, not calibration depth: on them, suppress chain-of-thought and few-shot and
+control depth via the reasoning-effort / thinking-budget parameter (see the CoT calibration
+and technique-gating tables below). A T1-capable model in `standard` mode still uses the
+T1 columns in this file normally.
+
 ---
 
 ## Part 1: ROLE — Detailed Calibration
@@ -230,14 +237,38 @@ This is wrong because: findings must be an array of objects, not a string.
 
 ---
 
-## CoT Calibration by Tier
+## CoT Calibration by Tier × Reasoning Mode
 
-| Tier | Use CoT? | Reasoning |
+| Tier / Mode | Use CoT? | Reasoning |
 |------|----------|-----------|
-| T1 (reasoning-class: o3, o4, extended thinking) | No | <3% accuracy gain, 20-80% time overhead [Meincke/Mollick 2025] |
-| T1 (non-reasoning: Opus, GPT-4o) | Only for multi-step analytical tasks | Zero-shot "Think step by step" is sufficient |
-| T2 | If multi-step reasoning needed | Short worked example (4-6 steps max) |
-| T3 | Never use pure CoT | Replace with numbered stepwise instructions in TASK. Long chains degrade output quality in small models [IEOM 2024]. Optimal steps: 4-6 for tasks that need reasoning. |
+| **Reasoning-native** (o3/o4, GPT-5, Claude extended-thinking, DeepSeek-R1) | **No — suppress** | CoT is internalized; explicit CoT is redundant and adds latency. Also suppress few-shot (often degrades). Control depth via the reasoning-effort / thinking-budget parameter, not the prompt. OpenAI reasoning best-practices T1 ✅; CoT was established for *non-reasoning* models [Wei 2201.11903]. <3% accuracy gain, 20-80% time overhead [Meincke/Mollick 2025]. |
+| T1 (non-reasoning: Opus, GPT-4o) | Only for multi-step analytical tasks | Zero-shot "Think step by step" is sufficient. |
+| T2 | If multi-step reasoning needed | Short worked example (4-6 steps max). |
+| **T3 (~<7-10B)** | **Never — CoT is HARMFUL here** | Not merely unhelpful: small models emit fluent-but-wrong reasoning traces whose errors the final answer inherits (⚠️ T3 / preprint magnitude — directionally consistent across reports, not a single peer-reviewed benchmark). Replace with least-to-most decomposition in TASK, or escalate to a larger model [IEOM 2024]. |
 
 Research context: Optimal CoT length scales inversely with model capability.
 14 steps for 1.5B models, 4 steps for 72B models [Qwen/Hendrycks 2025].
+
+---
+
+## Advanced Technique Gating
+
+Selection matrix for reasoning-style techniques. Gate is the condition under which the
+technique is worth adding. Default gate is **non-reasoning, T2+** (reasoning-native models
+plan internally; T3 models degrade on multi-step reasoning). ReAct and RAG-grounding are
+tier-agnostic where tools / sources exist.
+
+| Technique | Gate | Note |
+|-----------|------|------|
+| Chain-of-thought | Non-reasoning, T2+ analytical | Suppressed on reasoning-native; HARMFUL on T3 (use least-to-most) [Wei 2201.11903]. |
+| Self-consistency (sample-and-vote) | Non-reasoning, T2+, high-value only | ⚠️ 5-40x inference cost — reserve for high-stakes correctness [Wang 2203.11171]. |
+| Tree-of-thoughts | Non-reasoning, T2+, ONLY with explicit search structure + evaluator | Needs a branch/evaluate/backtrack scaffold and an evaluator function — not a bare prompt phrase [Yao 2305.10601]. |
+| Step-back prompting | Non-reasoning, T2+, abstraction-heavy | Derive the governing principle first, then answer [Zheng 2310.06117]. |
+| Least-to-most | Any tier, decomposable tasks | Preferred T3 substitute for CoT; pre-split into ordered sub-steps [Zhou 2205.10601]. |
+| Skeleton-of-thought | Non-reasoning, T2+, parallelizable output | Outline first, expand branches (optionally in parallel) — latency win [SoT 2307.15337]. |
+| ReAct (reason + act) | Tier-agnostic where tools exist | Interleave thought / tool-call; the default for `agent` deployments. |
+| RAG grounding | Tier-agnostic where sources exist | Always applies for grounded / RAG types (P3 universal constraint). |
+
+Source overview: The Prompt Report survey [arXiv 2406.06608] catalogs these techniques;
+the gating above encodes the 2025-2026 shift that reasoning-native models make CoT/few-shot
+redundant-to-harmful rather than default-beneficial.

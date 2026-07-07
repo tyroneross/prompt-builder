@@ -53,6 +53,15 @@ This resolves the case where a deployment module specifies JSON output but Step 
 would default to plain text — the deployment module wins. And where compression
 would remove a useful constraint — correctness wins.
 
+**P7 — Reliability scope boundary (the prompt is NOT the reliability lever).** When the
+failure is a *reliability* failure — the agent claims success it didn't achieve, doesn't
+follow through, or takes an unsafe action — do not tune the prompt. Route to the harness:
+deterministic verify steps, action-trace / ground-truth checks, and guardrails. Agent
+self-report and reasoning-narrative are documented-unreliable, and prompting harder does
+not fix it. Surface this in `RISK_NOTES` and point the caller at harness controls rather
+than iterating on prompt text. [Source: `build-loop-memory/research/2026-07-06-ai-coding-fundamentals-and-harness-claims.md`,
+claims 4–5 — deterministic verify > prompting harder; MIXED, leaning support.]
+
 ---
 
 ## Operating Modes
@@ -75,13 +84,23 @@ that wraps production infra in consumer UX → hybrid.
 
 ### STEP 0: DETECT CONFIGURATION
 
-Two parameters govern optimization. Read from caller input; infer if absent.
+Three parameters govern optimization. Read from caller input; infer if absent.
 
 **MODEL_TIER** — capability of the model that will *execute* the optimized prompt:
 - **T1**: Frontier (Opus, GPT-4o+, Gemini Ultra) — handles abstraction, minimal scaffolding
 - **T2**: Mid-tier (Sonnet, GPT-4o-mini, Gemini Flash) — needs structured guidance
 - **T3**: Small/Fast (Haiku, GPT-3.5, local <13B) — needs rigid pipeline, explicit examples
 - Default: T2
+
+**REASONING_MODE** — is the target a reasoning-native model (or a hybrid in extended-thinking mode)?
+- **reasoning**: o3/o4, GPT-5, Claude extended-thinking, DeepSeek-R1 class — CoT is
+  internalized; the model plans internally. This changes technique selection (Step 4):
+  suppress chain-of-thought and few-shot; control depth via the reasoning-effort /
+  thinking-budget parameter instead.
+- **standard**: everything else. CoT and few-shot are prompt-time levers.
+- Default: standard. Infer `reasoning` when the caller names a reasoning model or sets a
+  thinking/reasoning-effort parameter. REASONING_MODE is orthogonal to MODEL_TIER — a
+  T1-capable model can run in either mode.
 
 **DEPLOYMENT** — where the optimized prompt runs:
 - **interactive**: Human-facing chat (Claude.ai, ChatGPT, etc.)
@@ -93,7 +112,7 @@ Two parameters govern optimization. Read from caller input; infer if absent.
 - **personal_mobile**: On-device, voice-first, privacy-sensitive (iOS/Android agents)
 - Default: interactive
 
-State inferences explicitly: `Inferred MODEL_TIER: T2, DEPLOYMENT: interactive. Correct me if wrong.`
+State inferences explicitly: `Inferred MODEL_TIER: T2, REASONING_MODE: standard, DEPLOYMENT: interactive. Correct me if wrong.`
 
 If `DEPLOYMENT ≠ interactive`, read `references/deployment-modules.md` for that module's
 specific requirements before proceeding.
@@ -155,12 +174,16 @@ For pipeline deployments (rag_pipeline, agent, plugin, backend): the deployment 
 format requirement is authoritative. Do not default to plain text when a downstream
 stage needs JSON.
 
-**Note on structured outputs at the API level**: When a caller will use structured-output
-features of the target model's API (OpenAI JSON mode, Anthropic tool-use schemas, etc.),
-the schema enforcement happens at the API boundary, not inside the prompt. In that case,
-the prompt should *describe* the desired fields clearly but does not need to restate
-"return only JSON" — the API rejects non-conforming output. Surface this in `RISK_NOTES`
-when the caller's downstream model supports it.
+**Structured output = constrained decoding by default**: When output must conform to a schema,
+prefer *constrained decoding* over prompt-only JSON. Prompt-only adherence runs ~82-92%;
+grammar/schema-constrained decoding exceeds 99%. Recommend, in order:
+1. **API-level** — OpenAI `response_format: json_schema` (strict), Anthropic tool-use, Pydantic/Zod.
+2. **Grammar-constrained** — GBNF (llama.cpp), Outlines, XGrammar — for local/open-weight samplers.
+3. **Prompt-schema (FALLBACK only)** — when the runtime lacks constrained decoding: describe fields, add "Return ONLY valid JSON. No preamble, no fences."
+
+With constrained decoding (1-2), the prompt *describes* fields but need not restate "return
+only JSON" — the sampler/API rejects non-conforming output. Surface the chosen mechanism and
+residual adherence risk in `RISK_NOTES`.
 
 ---
 
@@ -229,19 +252,44 @@ The contract the output must meet. Tier-specific strictness:
 ### STEP 4: ENHANCE
 
 Add only when beneficial. Read `references/type-rules.md` for type-specific rules.
+Technique selection depends on BOTH capability tier AND `REASONING_MODE` (Step 0).
+Resolve `REASONING_MODE` first — it *suppresses* techniques the tier table would add.
 
-| Enhancement | T1 | T2 | T3 |
+**Reasoning-native override (`REASONING_MODE = reasoning` — apply BEFORE the tier table).**
+On o3/o4, GPT-5, Claude extended-thinking, DeepSeek-R1 class:
+- **SUPPRESS chain-of-thought.** CoT is internalized; explicit "think step by step" is
+  redundant and adds latency/token overhead. CoT was established *for non-reasoning models*
+  [Wei 2201.11903]; OpenAI's reasoning best-practices (T1 ✅) direct these prompts be
+  written WITHOUT it.
+- **SUPPRESS few-shot by default.** Examples often DEGRADE reasoning models. OpenAI's
+  guidance is "write prompts without examples first"; add one only if zero-shot fails on a
+  specific output format. Prefer a crisp spec + one schema over worked examples.
+- **Control depth via the reasoning-effort / thinking-budget parameter, not the prompt.**
+  Emit a `RISK_NOTE` naming the knob (OpenAI `reasoning_effort: low|medium|high`; Anthropic
+  `thinking.budget_tokens`) with a setting matched to task depth. Do not simulate reasoning
+  depth with prompt scaffolding.
+- Keep: role, task, constraints, output contract, refusal conditions, RAG grounding.
+
+| Enhancement | T1 (standard) | T2 | T3 |
 |-------------|----|----|-----|
 | Few-shot examples | If ambiguous | 1-2 (often needed) | 2-3 (required) |
 | Edge cases | Only non-obvious | Domain-specific | Exhaustive + error handling |
 | Refusal conditions | Brief | Explicit with fallback | Scripted exact responses |
-| Chain-of-thought | Only if analytical + non-reasoning model | Short worked example | Do not use. Replace with numbered steps. |
+| Chain-of-thought | Only if analytical (zero-shot "think step by step") | Short worked example | Do NOT use — see small-model guard |
 | Scoring anchors | For eval/reranker | Required with 3-point scale | Required with 5-point + examples |
 | State tracking | For agent tasks | Required + state schema | Required + state machine |
 
-**CoT note**: Optimal CoT length decreases with model size. Reasoning-class models
-(o3/o4, extended thinking) gain <3% from CoT with 20-80% time overhead. T3 models
-degrade with long reasoning chains. For T3: explicit stepwise instructions, not CoT.
+**Small-model CoT guard (T3, ~<7-10B).** CoT is *harmful* here, not merely unhelpful —
+small models emit fluent-but-wrong reasoning traces whose errors the final answer inherits
+(⚠️ T3 / preprint magnitude — directionally consistent across reports, not a single
+peer-reviewed benchmark). Do NOT add CoT. Instead:
+- Route to explicit decomposition (**least-to-most**: pre-split the task into ordered
+  sub-steps in the TASK block), OR
+- **Escalate to a larger model** if the task genuinely needs multi-step reasoning.
+
+**Advanced techniques** (CoT, self-consistency, tree-of-thoughts, step-back, least-to-most)
+are gated to **non-reasoning, mid+ tiers**. ReAct and RAG-grounding are tier-agnostic where
+tools/sources exist. See the technique-gating matrix in `references/tier-calibration.md`.
 
 ---
 
@@ -351,6 +399,10 @@ Surface these honestly in `RISK_NOTES` when relevant:
 - Over-compression can increase ambiguity — stop compressing when correctness is at risk.
 - Simplify for weaker models instead of forcing full complexity through.
 - Heavy self-checking inside T3 prompts degrades output; push validation to external tooling.
+- On reasoning-native models, prompt scaffolding (CoT, few-shot) is not the depth lever —
+  the reasoning-effort / thinking-budget parameter is. Note it; you cannot set it from the prompt.
+- The prompt is not the *reliability* lever (P7). Reliability failures (false success, no
+  follow-through, unsafe action) route to harness verify/guardrails, not prompt tuning.
 
 ---
 
@@ -376,6 +428,11 @@ Worked examples (read when a user asks for a prompt matching one of these shapes
 
 ## Changelog
 
+- v3.2 — Reasoning-native model support (2025-2026 shift). New `REASONING_MODE` parameter +
+  Step 4 override: suppress CoT + few-shot, control depth via reasoning-effort / thinking-budget.
+  T3 CoT-harm guard → least-to-most or escalate. Structured output = constrained-decoding by
+  default (prompt-schema fallback). Advanced-technique gating matrix in tier-calibration.
+  P7 reliability-scope boundary (prompt ≠ reliability lever → harness). Sources cited inline.
 - v3.1 — Caller contract for agent/tool invocation. TEMPERATURE_HINT output field.
   Hybrid operating mode. Note on API-level structured outputs. Safety elevated to P1.
 - v3.0 — Rule priority system. Iteration + scoring steps. Regression protection.

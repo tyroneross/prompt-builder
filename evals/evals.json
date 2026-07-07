@@ -159,7 +159,7 @@
         "tier"
       ],
       "must_not_contain_case_insensitive": [
-        "chain-of-thought"
+        "think step by step"
       ],
       "min_score": 17,
       "required_sections": ["CONFIG:", "DIAGNOSIS:", "RISK_NOTES:"]
@@ -179,6 +179,37 @@
       ],
       "min_score": 19,
       "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:"]
+    },
+    {
+      "id": "reasoning-model-suppress-cot",
+      "description": "Reasoning-native model (o3/GPT-5/extended-thinking class): suppress CoT + few-shot, control depth via reasoning-effort / thinking-budget",
+      "inputs": {
+        "raw_prompt": "Think step by step and use several worked examples to analyze which of three vendor contracts has the best risk-adjusted value.",
+        "model_tier": "T1",
+        "reasoning_mode": "reasoning",
+        "deployment": "interactive"
+      },
+      "must_contain_case_insensitive": [
+        "reasoning",
+        "thinking"
+      ],
+      "min_score": 18,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:", "RISK_NOTES:"]
+    },
+    {
+      "id": "constrained-decoding-default",
+      "description": "Structured JSON output should prefer constrained decoding over prompt-only JSON",
+      "inputs": {
+        "raw_prompt": "Extract company name, founding year, and headquarters city from the text and return JSON.",
+        "model_tier": "T2",
+        "deployment": "backend",
+        "output_consumer": "api"
+      },
+      "must_contain_case_insensitive": [
+        "schema"
+      ],
+      "min_score": 18,
+      "required_sections": ["CONFIG:", "OPTIMIZED_PROMPT:", "RISK_NOTES:"]
     }
   ]
 }

@@ -1,8 +1,9 @@
 {
   "name": "prompt-builder",
-  "description": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+  "description": "Prompt Policy Engine \u2014 classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
   "author": {
-    "name": "Tyrone Ross"
+    "name": "Tyrone Ross",
+    "url": "https://github.com/tyroneross"
   },
   "license": "Apache-2.0",
   "keywords": [
@@ -17,13 +18,15 @@
   "skills": "./skills",
   "interface": {
     "displayName": "Prompt Builder",
-    "shortDescription": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
-    "longDescription": "Prompt Policy Engine — classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+    "shortDescription": "Prompt Policy Engine \u2014 classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
+    "longDescription": "Prompt Policy Engine \u2014 classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Wraps the prompt-builder skill, callable by agents, tools, and slash commands.",
     "developerName": "Ross Labs",
     "category": "Coding",
     "capabilities": [
       "Read",
       "Write"
     ]
-  }
+  },
+  "repository": "https://github.com/tyroneross/prompt-builder",
+  "homepage": "https://github.com/tyroneross/prompt-builder"
 }

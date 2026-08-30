@@ -1,6 +1,6 @@
 {
   "name": "prompt-builder",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Classify, diagnose, rewrite, and score prompts by model tier and deployment",
   "author": {
     "name": "Tyrone Ross",

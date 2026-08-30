@@ -42,11 +42,11 @@ claude --print "List my installed plugins"
 
 | Command | Purpose |
 |---------|---------|
+| `/prompt-builder:route [request]` | Router — dispatches natural-language requests, including score-only and A/B-compare, to the right workflow |
 | `/prompt-builder:optimize [prompt or path]` | Optimize a prompt end-to-end |
-| `/prompt-builder:score [prompt or path]` | Score-only; returns dimensional breakdown + diagnosis |
-| `/prompt-builder:compare <a> <b>` | A/B two prompt versions with regression detection |
 | `/prompt-builder:save <id>` | Persist the last optimized prompt to the library |
-| `/prompt-builder:list [filter]` | Show saved prompts and their latest scores |
+
+Score-only and A/B-compare no longer have dedicated subcommands — ask in natural language (via `/prompt-builder:route` or by invoking the `prompt-builder` skill directly) and the skill's core engine handles it.
 
 ### Skill invocation (agents and tools)
 
@@ -100,7 +100,7 @@ Saved prompts live under `.prompt-builder/prompts/<id>/` in the consuming projec
     └── lessons.md          # Append-only cross-prompt insights (optional)
 ```
 
-Versions are never overwritten — `/prompt-builder:save` always increments.
+Versions are never overwritten — `/prompt-builder:save` always increments. There is no dedicated list command; inspect `.prompt-builder/prompts/` directly, or ask the skill.
 
 ## Regression testing
 

@@ -12,16 +12,13 @@ Universal AI agent guidance for Claude Code, Codex, Cursor, Copilot, Gemini CLI,
 
 ## Commands
 
-Six slash commands are thin wrappers over the skill. Humans use these; agents invoke the skill directly.
+Three slash commands are thin wrappers over the skill. Humans use these; agents invoke the skill directly. Score-only and A/B-compare have no dedicated subcommand — the skill's core engine and `references/scoring.md` handle those intents when invoked directly or via `/prompt-builder:route`.
 
 | Command | Purpose |
 |---------|---------|
+| `/prompt-builder:route` | Router — dispatches natural-language requests (including score-only and compare) to the right workflow |
 | `/prompt-builder:optimize [prompt or path]` | Full end-to-end optimization — diagnosis, rewrite, score |
-| `/prompt-builder:score [prompt or path]` | Score-only; returns dimensional breakdown and diagnosis |
-| `/prompt-builder:compare <a> <b>` | A/B two prompt versions with regression detection |
 | `/prompt-builder:save <id>` | Persist the last optimized prompt to the project library |
-| `/prompt-builder:list [filter]` | List saved prompts and their latest scores |
-| `/prompt-builder:route` | Router — dispatches to the right subcommand based on intent |
 
 ---
 

@@ -14,17 +14,15 @@ Route this request to the appropriate prompt-builder subcommand or skill based o
 
 1. If `$ARGUMENTS` is empty or only whitespace: list the available subcommands below and ask the user what they want to do.
 2. Otherwise: match the user's natural-language request against the subcommand intents below and invoke the best match.
-3. If the request clearly doesn't fit any subcommand but matches a `prompt-builder` skill (listed in your available skills), load the skill and follow its guidance instead.
+3. If the request doesn't match a subcommand — including score-only, A/B compare, or list-saved-prompts intents — load the `prompt-builder` skill directly (listed in your available skills) and follow its guidance; the skill's core engine and `references/scoring.md` cover scoring, comparison, and iteration without a dedicated subcommand.
 4. If nothing fits, say so and list the subcommands. Do NOT guess.
 
 ## Available subcommands
 
-- **`/prompt-builder:compare`** — A/B compare two versions of a prompt with dimensional scoring and regression det
-- **`/prompt-builder:list`** — List all prompts saved in the project-local library with their latest scores
 - **`/prompt-builder:optimize`** — Optimize a raw prompt for a target model tier and deployment context
 - **`/prompt-builder:save`** — Persist an optimized prompt to the project-local prompt library
-- **`/prompt-builder:score`** — Score an existing prompt on the 5-dimension rubric without rewriting it
 
+Score-only and A/B-compare requests are handled by the `prompt-builder` skill directly (no dedicated subcommand) — describe the request in natural language instead of a slash command.
 
 ## Examples
 

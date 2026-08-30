@@ -12,7 +12,7 @@ Save the last-optimized prompt (or one the user provides) to `.prompt-builder/pr
 1. Treat `{{ARGUMENTS}}` as the `<id>`. If empty, ask the user for a short stable identifier (kebab-case).
 
 2. Determine what to save:
-   - If the user just ran `/prompt-builder:optimize` or `/prompt-builder:compare` in this conversation, use that output.
+   - If the user just ran `/prompt-builder:optimize`, or asked the `prompt-builder` skill for a comparison in this conversation, use that output.
    - Otherwise, ask the user to paste the optimized prompt + its CONFIG line.
 
 3. Read any existing `.prompt-builder/prompts/<id>/` to find the highest version number. The new version is `v{n+1}`. If the directory doesn't exist, create it and use `v1`.

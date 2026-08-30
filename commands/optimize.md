@@ -23,5 +23,5 @@ Invoke the `prompt-builder` skill to optimize a prompt.
 
 5. Offer next actions:
    - `/prompt-builder:save <id>` — persist this version to `.prompt-builder/prompts/<id>/`
-   - `/prompt-builder:compare <id>` — A/B against a saved version
+   - Ask for an A/B comparison against a saved version — the `prompt-builder` skill handles it via `references/scoring.md`
    - Edit and re-run if the user wants adjustments

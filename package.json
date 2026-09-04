@@ -1,7 +1,7 @@
 {
   "name": "@tyroneross/prompt-builder",
   "version": "0.1.2",
-  "description": "Classify, diagnose, rewrite, and score prompts calibrated to model tier and deployment context. Ships plugin commands, skills, evals, and scripts.",
+  "description": "A prompt that works in chat often fails in production. Prompt-builder diagnoses, rewrites, and scores it for your model tier and deployment, so you ship with a score and catch regressions early.",
   "license": "Apache-2.0",
   "author": {
     "name": "Tyrone Ross, Jr",

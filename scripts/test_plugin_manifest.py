@@ -111,7 +111,10 @@ class VersionShapeTests(unittest.TestCase):
         plugin_v = load_json(PLUGIN_JSON).get("version")  # None under auto-SHA; asserts marketplace also omits it (no masking)
         market = load_json(MARKETPLACE_JSON)
         meta_v = market.get("metadata", {}).get("version")
-        if meta_v is not None:
+        # Under auto-SHA plugin.json omits version; marketplace metadata.version is the
+        # CATALOG version and legitimately tracks package.json, so only cross-check it
+        # against plugin.json when the plugin actually declares a version.
+        if meta_v is not None and plugin_v is not None:
             self.assertEqual(
                 meta_v, plugin_v,
                 f"marketplace.json metadata.version {meta_v!r} != plugin.json version {plugin_v!r}",
@@ -139,7 +142,15 @@ class McpServersReferenceTests(unittest.TestCase):
             self.assertIn("mcpServers", mcp_data, "referenced .mcp.json missing mcpServers key")
         elif isinstance(ref, dict):
             # Inline servers object — basic shape check
-            self.assertIn("mcpServers", ref, "inline mcpServers missing key")
+            # Inline form is a map of server-name -> config, NOT a nested
+            # {"mcpServers": ...} wrapper. Assert the shape that actually ships.
+            self.assertTrue(ref, "inline mcpServers is empty")
+            for server_name, cfg in ref.items():
+                self.assertIsInstance(cfg, dict, f"mcpServers[{server_name!r}] is not an object")
+                self.assertTrue(
+                    cfg.get("command") or cfg.get("url"),
+                    f"mcpServers[{server_name!r}] declares neither 'command' nor 'url'",
+                )
         else:
             self.fail(f"mcpServers should be string-path or dict, got {type(ref).__name__}")
 

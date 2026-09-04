@@ -1,8 +1,14 @@
 # prompt-builder
 
-A Claude Code plugin that wraps the **prompt-builder** skill — a Prompt Policy Engine that classifies, diagnoses, rewrites, and scores prompts calibrated to model tier and deployment context.
+A prompt that works in chat often fails in production, and there is no way to tell whether an edit made it better or worse. Prompt-builder classifies the prompt, diagnoses its top failure modes, rewrites it on a 6-part stack calibrated to model tier and deployment, and scores it on five dimensions. You ship prompts with a number attached and catch regressions before your users do.
 
 Designed to be callable by **agents, tools, and humans** through a shared input/output contract.
+
+## Start here
+
+Type **`/prompt-builder:route`** and describe what you want — "optimize this system prompt for a small model", "score these two versions and tell me which is better". That one command dispatches to the right workflow; you never have to pick a subcommand.
+
+To report a bug or request a feature: **`/prompt-builder:submit-feedback`**.
 
 ## What it does
 
@@ -45,6 +51,7 @@ claude --print "List my installed plugins"
 | `/prompt-builder:route [request]` | Router — dispatches natural-language requests, including score-only and A/B-compare, to the right workflow |
 | `/prompt-builder:optimize [prompt or path]` | Optimize a prompt end-to-end |
 | `/prompt-builder:save <id>` | Persist the last optimized prompt to the library |
+| `/prompt-builder:submit-feedback` | Report a bug or request a feature — drafts a GitHub issue, files it only after you approve |
 
 Score-only and A/B-compare no longer have dedicated subcommands — ask in natural language (via `/prompt-builder:route` or by invoking the `prompt-builder` skill directly) and the skill's core engine handles it.
 
@@ -131,7 +138,7 @@ The runner spawns `claude -p` per case, parses the CONFIG line, and asserts on `
 ## Architecture
 
 - **1 skill** (`prompt-builder`) — the engine. Progressive disclosure via 4 reference files + 5 worked examples.
-- **5 slash commands** — thin wrappers. Humans use these; agents invoke the skill directly.
+- **4 slash commands** (`route`, `optimize`, `save`, `submit-feedback`) — thin wrappers. Humans use these; agents invoke the skill directly.
 - **No agents, no hooks, no MCP server** — the skill is a stateless transform. Callers get better results invoking it directly than orchestrating sub-agents.
 - **Zero runtime dependencies** — plain Markdown + JSON + Node's built-in stdlib.
 

@@ -1,7 +1,6 @@
 {
   "name": "prompt-builder",
-  "version": "0.1.3",
-  "description": "Classify, diagnose, rewrite, and score prompts by model tier and deployment",
+  "description": "A prompt that works in chat often fails in production, and there is no way to tell whether an edit made it better or worse. Prompt-builder classifies the prompt, diagnoses its top failure modes, rewrites it on a 6-part stack calibrated to model tier and deployment, and scores it on five dimensions. You ship prompts with a number attached and catch regressions before your users do.",
   "author": {
     "name": "Tyrone Ross",
     "url": "https://github.com/tyroneross"

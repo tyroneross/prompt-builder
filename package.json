@@ -1,6 +1,6 @@
 {
   "name": "@tyroneross/prompt-builder",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A prompt that works in chat often fails in production. Prompt-builder diagnoses, rewrites, and scores it for your model tier and deployment, so you ship with a score and catch regressions early.",
   "license": "Apache-2.0",
   "author": {

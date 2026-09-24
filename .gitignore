@@ -3,3 +3,6 @@
 .bookmark/
 .claude-code-debugger/
 skills/.DS_Store
+
+# build-loop runtime state (local only)
+.build-loop/
